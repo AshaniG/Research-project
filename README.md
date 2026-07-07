@@ -15,6 +15,42 @@ controlled attack simulator to validate detection.
 > a second (attacker) machine, and shows exactly how to run the attack and see
 > detection working.
 
+### Fastest path — build both servers automatically
+
+If you have **VirtualBox** and **Vagrant** installed, you don't have to create
+or configure the VMs by hand. From this folder run:
+
+```bash
+vagrant up
+```
+
+This creates **two** Ubuntu 24.04 VMs on a private network, installs everything,
+and pre-builds the detector:
+
+| VM | IP | Role |
+|----|----|------|
+| `ddos-server`   | 192.168.56.10 | victim service + XDP detector |
+| `ddos-attacker` | 192.168.56.11 | runs the flood |
+
+Then:
+
+```bash
+# terminal 1 - on the server
+vagrant ssh ddos-server
+python3 /vagrant/server/target_server.py 0.0.0.0 8080
+
+# terminal 2 - on the server (attach the detector)
+vagrant ssh ddos-server
+sudo /vagrant/build/xdp_ddos_loader -i enp0s8
+
+# terminal 3 - on the attacker
+vagrant ssh ddos-attacker
+sudo /vagrant/scripts/attack_sim.sh 192.168.56.10 syn 20
+```
+
+Watch the detector dashboard on the server fill with dropped packets and blocked
+IPs. `vagrant destroy -f` removes both VMs when you're done.
+
 ---
 
 ## How it works
