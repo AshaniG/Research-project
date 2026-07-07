@@ -24,27 +24,27 @@ or configure the VMs by hand. From this folder run:
 vagrant up
 ```
 
-This creates **two** Ubuntu 24.04 VMs on a private network, installs everything,
+This creates the **two servers** on a private network, installs everything,
 and pre-builds the detector:
 
 | VM | IP | Role |
 |----|----|------|
-| `ddos-server`   | 192.168.56.10 | victim service + XDP detector |
-| `ddos-attacker` | 192.168.56.11 | runs the flood |
+| `target-server` | 192.168.56.10 | the server under attack: victim website + XDP detector |
+| `attacker`      | 192.168.56.11 | the DDoS server: generates the flood |
 
 Then:
 
 ```bash
-# terminal 1 - on the server
-vagrant ssh ddos-server
+# terminal 1 - on the target server
+vagrant ssh target-server
 python3 /vagrant/server/target_server.py 0.0.0.0 8080
 
-# terminal 2 - on the server (attach the detector)
-vagrant ssh ddos-server
+# terminal 2 - on the target server (attach the detector)
+vagrant ssh target-server
 sudo /vagrant/build/xdp_ddos_loader -i enp0s8
 
-# terminal 3 - on the attacker
-vagrant ssh ddos-attacker
+# terminal 3 - on the DDoS server (attacker)
+vagrant ssh attacker
 sudo /vagrant/scripts/attack_sim.sh 192.168.56.10 syn 20
 ```
 

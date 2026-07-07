@@ -25,24 +25,24 @@ Vagrant.configure("2") do |config|
   # Keep both VMs on the same private (host-only) network so they can flood
   # each other safely, isolated from the internet and your real LAN.
 
-  # ---- The SERVER (victim + detector) ----------------------------------
-  config.vm.define "ddos-server" do |srv|
-    srv.vm.hostname = "ddos-server"
+  # ---- The TARGET SERVER (victim + detector) ---------------------------
+  config.vm.define "target-server" do |srv|
+    srv.vm.hostname = "target-server"
     srv.vm.network "private_network", ip: "192.168.56.10"
     srv.vm.provider "virtualbox" do |vb|
-      vb.name = "ddos-server"
+      vb.name = "target-server"
       vb.memory = 2048
       vb.cpus = 2
     end
     srv.vm.provision "shell", path: "vagrant/provision_server.sh"
   end
 
-  # ---- The ATTACKER -----------------------------------------------------
-  config.vm.define "ddos-attacker" do |atk|
-    atk.vm.hostname = "ddos-attacker"
+  # ---- The DDoS SERVER (attacker) --------------------------------------
+  config.vm.define "attacker" do |atk|
+    atk.vm.hostname = "attacker"
     atk.vm.network "private_network", ip: "192.168.56.11"
     atk.vm.provider "virtualbox" do |vb|
-      vb.name = "ddos-attacker"
+      vb.name = "attacker"
       vb.memory = 1024
       vb.cpus = 1
     end

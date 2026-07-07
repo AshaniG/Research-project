@@ -23,13 +23,13 @@ IFACE="${IFACE:-enp0s8}"
 cat > /etc/motd <<EOF
 
 ========================================================================
-  DDoS-detection LAB  ::  ddos-server (this machine, the victim)
+  DDoS-detection LAB  ::  target-server (this machine, the victim)
   Private IP : 192.168.56.10        Interface : ${IFACE}
 ------------------------------------------------------------------------
   1) Start the target website:
        python3 /vagrant/server/target_server.py 0.0.0.0 8080
 
-  2) In another shell (vagrant ssh ddos-server), attach the detector:
+  2) In another shell (vagrant ssh target-server), attach the detector:
        sudo /vagrant/build/xdp_ddos_loader -i ${IFACE}
 
   3) From the attacker VM, run scripts/attack_sim.sh 192.168.56.10 ...

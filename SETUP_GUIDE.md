@@ -43,7 +43,7 @@ This keeps everything on a private, isolated network. Nothing leaves your PC.
 
 ### Step 2 — Create the SERVER VM (Machine A)
 
-1. In VirtualBox: **New** → Name `ddos-server`, Type *Linux*, Version *Ubuntu 64-bit*.
+1. In VirtualBox: **New** → Name `target-server`, Type *Linux*, Version *Ubuntu 64-bit*.
 2. Memory: 2048 MB, Disk: 15 GB. Attach the Ubuntu Server ISO and install it.
    During install, create a user (e.g. `student`) and enable **OpenSSH**.
 3. **Add a private network** so the two VMs can talk:
@@ -53,7 +53,7 @@ This keeps everything on a private, isolated network. Nothing leaves your PC.
 
 ### Step 3 — Create the ATTACKER VM (Machine B)
 
-Repeat Step 2, name it `ddos-attacker`. Give it the **same** Host-only / Internal
+Repeat Step 2, name it `attacker` (this is your "DDoS server"). Give it the **same** Host-only / Internal
 network on Adapter 2 so both VMs are on the same private LAN.
 
 ### Step 4 — Find each VM's private IP

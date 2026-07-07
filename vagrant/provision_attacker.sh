@@ -11,7 +11,7 @@ apt-get install -y hping3 iperf3 curl iproute2
 cat > /etc/motd <<'EOF'
 
 ========================================================================
-  DDoS-detection LAB  ::  ddos-attacker (this machine)
+  DDoS-detection LAB  ::  attacker / DDoS server (this machine)
   Private IP : 192.168.56.11    Target (server) : 192.168.56.10
 ------------------------------------------------------------------------
   Check you can reach the server:
