@@ -10,6 +10,11 @@ This repository contains everything needed to stand up a small lab: the
 in-kernel detector, a user-space monitor, a target ("victim") server, and a
 controlled attack simulator to validate detection.
 
+> **New to this? Read [`SETUP_GUIDE.md`](SETUP_GUIDE.md)** — a beginner
+> step-by-step walkthrough that builds the Ubuntu server, explains why you need
+> a second (attacker) machine, and shows exactly how to run the attack and see
+> detection working.
+
 ---
 
 ## How it works
