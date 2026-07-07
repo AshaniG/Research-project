@@ -92,7 +92,8 @@ Thresholds are runtime-tunable from the loader — no recompile needed.
 | `src/xdp_ddos_loader.c` | User-space loader + live monitor |
 | `src/common.h`          | Structs/constants shared by both |
 | `server/target_server.py` | Minimal HTTP "victim" service |
-| `attacker/ddos_simulator.py` | Self-contained DDoS simulator (Python) |
+| `attacker/ddos_simulator.py` | Self-contained DDoS simulator (Python CLI) |
+| `attacker/webui/`       | Browser control panel for the simulator |
 | `scripts/setup.sh`      | Installs toolchain + libraries |
 | `scripts/attack_sim.sh` | Controlled flood generator via hping3 (lab only) |
 | `Makefile`              | Builds the eBPF object and the monitor |
@@ -190,6 +191,25 @@ The `syn`/`udp`/`icmp` modes forge random source IPs, which is exactly what
 exercises the detector's per-source LRU tracking — each fake IP looks like a
 separate attacker. The simulator refuses non-private (non-RFC1918) targets
 unless you pass `--force`.
+
+## Web control panel (frontend)
+
+Prefer buttons over the command line? `attacker/webui/` is a browser dashboard
+for the simulator. Run it on the **attacker** machine:
+
+```bash
+sudo python3 attacker/webui/server.py 0.0.0.0 5000
+```
+
+Then open **http://<attacker-ip>:5000/** (e.g. `http://192.168.56.11:5000/`).
+From the page you can pick the target, attack type, port, threads, duration and
+rate, click **Launch attack**, and watch the live packet count and a real-time
+rate chart. **Stop** ends it immediately. It uses the same engine and the same
+"refuse non-private target" safety guard as the CLI (needs `sudo` for
+syn/udp/icmp; http mode works without).
+
+It's built with the Python standard library only — no Flask, no external JS —
+so it runs anywhere Python does.
 
 ## Tuning for your traffic
 
