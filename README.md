@@ -10,6 +10,20 @@ This repository contains everything needed to stand up a small lab: the
 in-kernel detector, a user-space monitor, a target ("victim") server, and a
 controlled attack simulator to validate detection.
 
+### Just want to see the simulator run? (no framework, no VM, no root)
+
+The simulator is plain **Python 3** — nothing to install. To try it on your own
+computer in one step:
+
+```bash
+./demo.sh
+```
+
+This starts the target server and the simulator's web panel locally, then tells
+you to open **http://localhost:5000** and click *Launch attack* (mode: HTTP,
+target `127.0.0.1`, port `8080`). Ctrl-C stops it. This is just to learn the
+tools; the full kernel-detection experiment uses the two-machine lab below.
+
 > **New to this? Read [`SETUP_GUIDE.md`](SETUP_GUIDE.md)** — a beginner
 > step-by-step walkthrough that builds the Ubuntu server, explains why you need
 > a second (attacker) machine, and shows exactly how to run the attack and see
