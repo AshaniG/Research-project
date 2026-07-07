@@ -9,7 +9,7 @@
 # in most jurisdictions. This exists solely to validate your own detector.
 # ===========================================================================
 #
-#   sudo ./scripts/attack_sim.sh <target-ip> [syn|udp|icmp|mixed] [duration_s]
+#   sudo ./ddos-simulator/attack_sim.sh <target-ip> [syn|udp|icmp|mixed] [duration_s]
 #
 # Requires hping3 (installed by scripts/setup.sh).
 set -euo pipefail

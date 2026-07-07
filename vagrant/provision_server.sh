@@ -32,7 +32,7 @@ cat > /etc/motd <<EOF
   2) In another shell (vagrant ssh target-server), attach the detector:
        sudo /vagrant/build/xdp_ddos_loader -i ${IFACE}
 
-  3) From the attacker VM, run scripts/attack_sim.sh 192.168.56.10 ...
+  3) From the attacker VM, run ddos-simulator/attack_sim.sh 192.168.56.10 ...
      and watch the dashboard here.
 ========================================================================
 EOF

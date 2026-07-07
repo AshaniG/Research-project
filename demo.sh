@@ -27,7 +27,7 @@ python3 server/target_server.py 127.0.0.1 8080 &
 TARGET_PID=$!
 
 echo "[*] Starting the DDoS simulator CONTROL PANEL on http://127.0.0.1:5000 ..."
-python3 attacker/webui/server.py 127.0.0.1 5000 &
+python3 ddos-simulator/webui/server.py 127.0.0.1 5000 &
 PANEL_PID=$!
 
 # Make sure both children are killed when this script exits (Ctrl-C).

@@ -7,8 +7,8 @@ and stop simulated attacks with buttons instead of the command line, and watch
 the live packet rate in a chart.
 
 Run on the ATTACKER machine:
-    sudo python3 attacker/webui/server.py            # listens on 0.0.0.0:5000
-    sudo python3 attacker/webui/server.py 0.0.0.0 5000
+    sudo python3 ddos-simulator/webui/server.py            # listens on 0.0.0.0:5000
+    sudo python3 ddos-simulator/webui/server.py 0.0.0.0 5000
 Then open http://<attacker-ip>:5000/ in a browser.
 
 (sudo is needed for syn/udp/icmp raw-socket modes; http mode works without it.)

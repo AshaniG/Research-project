@@ -142,7 +142,7 @@ vagrant ssh attacker
 Now run the attack against the server's address (192.168.56.10):
 
 ```bash
-sudo python3 /vagrant/attacker/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 --duration 20
+sudo python3 /vagrant/ddos-simulator/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 --duration 20
 ```
 
 The attacker prints how many packets it is sending:
@@ -177,7 +177,7 @@ Instead of step 6, on the attacker run the browser control panel:
 
 ```bash
 vagrant ssh attacker
-sudo python3 /vagrant/attacker/webui/server.py 0.0.0.0 5000
+sudo python3 /vagrant/ddos-simulator/webui/server.py 0.0.0.0 5000
 ```
 
 Then on your laptop open a browser at **http://192.168.56.11:5000/**, set
@@ -201,6 +201,6 @@ vagrant destroy -f  # delete both machines completely
 | your laptop      | `vagrant up`  (build both machines)                               |
 | server, term A   | `python3 /vagrant/server/target_server.py 0.0.0.0 8080`          |
 | server, term B   | `sudo /vagrant/build/xdp_ddos_loader -i enp0s8`                  |
-| attacker         | `sudo python3 /vagrant/attacker/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 --duration 20` |
+| attacker         | `sudo python3 /vagrant/ddos-simulator/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 --duration 20` |
 
 Remember the map: **attacker (.11) → floods → server (.10) → detector blocks it.**

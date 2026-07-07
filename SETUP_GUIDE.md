@@ -180,16 +180,16 @@ cd Research-project
 safely. Run (replace with your real `SERVER_IP`):
 
 ```bash
-sudo ./scripts/attack_sim.sh 192.168.56.10 syn 20
+sudo ./ddos-simulator/attack_sim.sh 192.168.56.10 syn 20
 ```
 
 This means: flood `192.168.56.10` with **TCP SYN** packets for **20 seconds**,
 using randomized (spoofed) source IPs. Other modes:
 
 ```bash
-sudo ./scripts/attack_sim.sh <SERVER_IP> udp 20     # UDP flood
-sudo ./scripts/attack_sim.sh <SERVER_IP> icmp 20    # ping flood
-sudo ./scripts/attack_sim.sh <SERVER_IP> mixed 20   # all three at once
+sudo ./ddos-simulator/attack_sim.sh <SERVER_IP> udp 20     # UDP flood
+sudo ./ddos-simulator/attack_sim.sh <SERVER_IP> icmp 20    # ping flood
+sudo ./ddos-simulator/attack_sim.sh <SERVER_IP> mixed 20   # all three at once
 ```
 
 ### What "attack" actually means here

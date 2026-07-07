@@ -59,7 +59,7 @@ sudo /vagrant/build/xdp_ddos_loader -i enp0s8
 
 # terminal 3 - on the DDoS server (attacker)
 vagrant ssh attacker
-sudo /vagrant/scripts/attack_sim.sh 192.168.56.10 syn 20
+sudo /vagrant/ddos-simulator/attack_sim.sh 192.168.56.10 syn 20
 ```
 
 Watch the detector dashboard on the server fill with dropped packets and blocked
@@ -106,10 +106,10 @@ Thresholds are runtime-tunable from the loader — no recompile needed.
 | `src/xdp_ddos_loader.c` | User-space loader + live monitor |
 | `src/common.h`          | Structs/constants shared by both |
 | `server/target_server.py` | Minimal HTTP "victim" service |
-| `attacker/ddos_simulator.py` | Self-contained DDoS simulator (Python CLI) |
-| `attacker/webui/`       | Browser control panel for the simulator |
+| `ddos-simulator/ddos_simulator.py` | Self-contained DDoS simulator (Python CLI) |
+| `ddos-simulator/webui/`       | Browser control panel for the simulator |
 | `scripts/setup.sh`      | Installs toolchain + libraries |
-| `scripts/attack_sim.sh` | Controlled flood generator via hping3 (lab only) |
+| `ddos-simulator/attack_sim.sh` | Controlled flood generator via hping3 (lab only) |
 | `Makefile`              | Builds the eBPF object and the monitor |
 
 ---
@@ -169,7 +169,7 @@ You'll see a live dashboard. Useful options:
 
 ```bash
 # SYN flood for 15s against the server at 10.0.0.5
-sudo ./scripts/attack_sim.sh 10.0.0.5 syn 15
+sudo ./ddos-simulator/attack_sim.sh 10.0.0.5 syn 15
 
 # also: udp | icmp | mixed
 ```
@@ -182,13 +182,13 @@ requests to the target keep succeeding.
 
 ## The DDoS simulator
 
-`attacker/ddos_simulator.py` runs on the attacker machine and generates the
+`ddos-simulator/ddos_simulator.py` runs on the attacker machine and generates the
 flood. It is self-contained Python (no hping3 needed) so you can read exactly
 how each attack is built. Run it on the **attacker** VM against the **target**:
 
 ```bash
 # SYN flood, 8 workers, 20 seconds, at the web server's port
-sudo python3 attacker/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 -t 8 -d 20
+sudo python3 ddos-simulator/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 -t 8 -d 20
 ```
 
 | Mode | What it sends | Root? |
@@ -208,11 +208,11 @@ unless you pass `--force`.
 
 ## Web control panel (frontend)
 
-Prefer buttons over the command line? `attacker/webui/` is a browser dashboard
+Prefer buttons over the command line? `ddos-simulator/webui/` is a browser dashboard
 for the simulator. Run it on the **attacker** machine:
 
 ```bash
-sudo python3 attacker/webui/server.py 0.0.0.0 5000
+sudo python3 ddos-simulator/webui/server.py 0.0.0.0 5000
 ```
 
 Then open **http://<attacker-ip>:5000/** (e.g. `http://192.168.56.11:5000/`).
@@ -250,7 +250,7 @@ Prometheus.
 
 ## ⚠️ Ethical & legal use
 
-`scripts/attack_sim.sh` generates real flood traffic. Use it **only** against
+`ddos-simulator/attack_sim.sh` generates real flood traffic. Use it **only** against
 systems you own or are explicitly authorized to test, on an **isolated/private
 network**. The script refuses non-RFC1918 targets by default. Attacking hosts
 you don't control is illegal in most jurisdictions. This project is for
