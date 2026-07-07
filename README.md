@@ -92,8 +92,9 @@ Thresholds are runtime-tunable from the loader — no recompile needed.
 | `src/xdp_ddos_loader.c` | User-space loader + live monitor |
 | `src/common.h`          | Structs/constants shared by both |
 | `server/target_server.py` | Minimal HTTP "victim" service |
+| `attacker/ddos_simulator.py` | Self-contained DDoS simulator (Python) |
 | `scripts/setup.sh`      | Installs toolchain + libraries |
-| `scripts/attack_sim.sh` | Controlled flood generator (lab only) |
+| `scripts/attack_sim.sh` | Controlled flood generator via hping3 (lab only) |
 | `Makefile`              | Builds the eBPF object and the monitor |
 
 ---
@@ -163,6 +164,32 @@ source IPs appear under **Currently blocked sources**, while normal `curl`
 requests to the target keep succeeding.
 
 ---
+
+## The DDoS simulator
+
+`attacker/ddos_simulator.py` runs on the attacker machine and generates the
+flood. It is self-contained Python (no hping3 needed) so you can read exactly
+how each attack is built. Run it on the **attacker** VM against the **target**:
+
+```bash
+# SYN flood, 8 workers, 20 seconds, at the web server's port
+sudo python3 attacker/ddos_simulator.py 192.168.56.10 --mode syn --port 8080 -t 8 -d 20
+```
+
+| Mode | What it sends | Root? |
+|------|---------------|-------|
+| `syn`  | TCP SYN packets with spoofed random source IPs (SYN flood) | yes |
+| `udp`  | UDP packets with spoofed random source IPs | yes |
+| `icmp` | ICMP echo (ping) flood with spoofed sources | yes |
+| `http` | Real HTTP GET requests (application-layer flood) | no |
+
+Options: `--mode`, `--port`, `-t/--threads`, `-d/--duration`, `--pps` (per-thread
+rate cap), `--no-spoof`, `--force` (allow non-private target — only if authorized).
+
+The `syn`/`udp`/`icmp` modes forge random source IPs, which is exactly what
+exercises the detector's per-source LRU tracking — each fake IP looks like a
+separate attacker. The simulator refuses non-private (non-RFC1918) targets
+unless you pass `--force`.
 
 ## Tuning for your traffic
 
