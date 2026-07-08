@@ -9,6 +9,17 @@ Do every step below once for `target-server`, then repeat for `attacker`.
 
 ---
 
+## Why Ubuntu Server (and not Desktop)?
+
+- **Server = command line only, no desktop GUI.** It uses much less RAM/CPU,
+  which matters because you run **two** VMs at once.
+- Everything in this project runs with **commands**, so you never need a mouse.
+- If a black command-line screen feels scary, **Ubuntu Desktop works exactly the
+  same** for this project — it just adds a clickable GUI and uses more memory.
+  Either one is fine. Server is the lighter, standard lab choice.
+
+---
+
 ## Step 1 — Download Ubuntu (one file)
 
 Download **Ubuntu Server 24.04 LTS**:
@@ -96,24 +107,70 @@ Repeat Steps 2–5 for the second VM (`attacker`).
 
 ---
 
-## Step 6 — Find each VM's private IP
+## Step 6 — The IP addresses (automatic vs manual)
 
-Log into each VM and run:
+Each VM has **two** adapters, so it has **two** IPs — and they do different jobs:
+
+| Adapter | Job | IP | Do you set it? |
+|---------|-----|----|----------------|
+| Adapter 1 · NAT | internet, for `apt install` | automatic, like `10.0.2.15` | ❌ leave it alone |
+| Adapter 2 · Host-only | the lab network (VM ↔ VM) | this is the one that matters | ✅ set this |
+
+First, just look at what you have. Log into each VM and run:
 
 ```bash
 ip -4 addr show
 ```
 
-Look for the adapter with an address like **192.168.56.x** (usually `enp0s8`).
-You should get:
+The **Host-only** adapter (usually `enp0s8`) shows an address like
+`192.168.56.x`. That is your lab IP.
 
-- `target-server` → **192.168.56.10** (or similar .x)
-- `attacker`      → **192.168.56.11** (or similar .x)
+### Automatic or manual?
 
-Write both down. (If they aren't .10 and .11, that's fine — just use whatever
-numbers you see.)
+- **Automatic (DHCP)** — VirtualBox may hand out an IP by itself (e.g.
+  `192.168.56.101`). Easy, but it can **change** when you reboot, which breaks
+  your commands.
+- **Manual (static)** — you pin a fixed IP. **Recommended**, so `target-server`
+  is *always* `192.168.56.10` and `attacker` is *always* `192.168.56.11`.
 
-**Test the connection** — on the `attacker` VM run:
+### How to set a manual (static) IP
+
+Ubuntu uses a config file called **netplan**. On the VM:
+
+```bash
+ls /etc/netplan/                            # find the file name
+sudo nano /etc/netplan/50-cloud-init.yaml   # open it (use the name you saw)
+```
+
+Make the file look like this — on **target-server**:
+
+```yaml
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: false
+      addresses: [192.168.56.10/24]
+```
+
+On the **attacker** VM, change the last line to `[192.168.56.11/24]`.
+
+Save the file (`Ctrl+O`, Enter, then `Ctrl+X`), then apply it:
+
+```bash
+sudo netplan apply
+ip -4 addr show enp0s8      # confirm your fixed IP is there
+```
+
+> ⚠️ YAML is picky: use **spaces, never tabs**, and keep the indentation exactly
+> as shown. `enp0s3` = Adapter 1 (NAT), `enp0s8` = Adapter 2 (Host-only) — check
+> your real names with `ip a` first and use those.
+
+### Test the connection
+
+On the `attacker` VM run:
 
 ```bash
 ping -c 3 192.168.56.10
